@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nicky Santiago</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0c0c0d;
+      --surface:   #131315;
+      --border:    #222226;
+      --muted:     #4a4a52;
+      --subtle:    #7a7a88;
+      --text:      #e2e2e8;
+      --bright:    #f5f5f8;
+      --accent:    #a78bfa;
+      --accent2:   #6ee7b7;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 24px 120px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* subtle grid texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      margin-bottom: 64px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: rise 0.7s ease forwards 0.1s;
+    }
+
+    .name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 6vw, 3.4rem);
+      font-weight: 400;
+      color: var(--bright);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .role {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--subtle);
+    }
+
+    .role span {
+      color: var(--accent2);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 32px;
+      height: 1px;
+      background: var(--border);
+      margin: 40px 0;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      margin-bottom: 52px;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise 0.6s ease forwards;
+    }
+
+    section:nth-child(2) { animation-delay: 0.25s; }
+    section:nth-child(3) { animation-delay: 0.38s; }
+    section:nth-child(4) { animation-delay: 0.50s; }
+    section:nth-child(5) { animation-delay: 0.62s; }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── BIO ── */
+    .bio p {
+      font-size: 0.875rem;
+      color: var(--subtle);
+      line-height: 1.85;
+    }
+
+    .bio p + p { margin-top: 14px; }
+
+    .bio strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── LINK LIST ── */
+    .link-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .link-list li a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.8rem;
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+      gap: 12px;
+    }
+
+    .link-list li a:hover {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--bright);
+    }
+
+    .link-list li a:hover .arrow { opacity: 1; transform: translateX(0); }
+
+    .link-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .link-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--border);
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
+
+    .link-icon svg { width: 13px; height: 13px; }
+
+    .link-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .link-title { color: var(--text); font-weight: 500; font-size: 0.82rem; }
+    .link-sub   { color: var(--muted); font-size: 0.7rem; letter-spacing: 0.02em; }
+
+    .arrow {
+      color: var(--muted);
+      font-size: 0.75rem;
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.18s, transform 0.18s;
+    }
+
+    /* ── PROJECTS ── */
+    .project-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .project-item {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 16px 14px;
+      transition: background 0.18s, border-color 0.18s;
+      cursor: default;
+    }
+
+    .project-item:hover { background: var(--surface); border-color: #333340; }
+
+    .project-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .project-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--bright);
+    }
+
+    .project-tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      background: rgba(110, 231, 183, 0.08);
+      padding: 2px 7px;
+      border-radius: 99px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .project-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── POSTS ── */
+    .post-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .post-list li a {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 16px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.18s, border-color 0.18s;
+    }
+
+    .post-list li a:hover {
+      background: var(--surface);
+      border-color: var(--border);
+    }
+
+    .post-title {
+      font-size: 0.8rem;
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .post-list li a:hover .post-title { color: var(--bright); }
+
+    .post-date {
+      font-size: 0.68rem;
+      color: var(--muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      opacity: 0;
+      animation: rise 0.6s ease forwards 0.85s;
+    }
+
+    /* ── ANIMATION ── */
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      body { padding: 56px 20px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<main>
+
+  <!-- HEADER -->
+  <header class="header">
+    <h1 class="name">Nicky <em>Santiago</em></h1>
+    <p class="role">Infrastructure <span>&</span> Security Engineer</p>
+  </header>
+
+  <!-- ABOUT -->
+  <section>
+    <div class="section-label">about</div>
+    <div class="bio">
+      <p>
+        I build and harden the systems that keep things running. Passionate about <strong>distributed infrastructure</strong>, <strong>zero-trust security</strong>, and making on-call life just a little less painful.
+      </p>
+      <p>
+        Currently doing deep work in cloud security posture, internal platform tooling, and writing about what I learn along the way.
+      </p>
+    </div>
+  </section>
+
+  <!-- SOCIAL LINKS -->
+  <section>
+    <div class="section-label">find me</div>
+    <ul class="link-list">
+
+      <li>
+        <a href="https://github.com/" target="_blank" rel="noopener">
+          <span class="link-left">
+            <span class="link-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </span>
+            <span class="link-meta">
+              <span class="link-title">GitHub</span>
+              <span class="link-sub">@nickysantiago</span>
+            </span>
+          </span>
+          <span class="arrow">→</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://twitter.com/" target="_blank" rel="noopener">
+          <span class="link-left">
+            <span class="link-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </span>
+            <span class="link-meta">
+              <span class="link-title">X / Twitter</span>
+              <span class="link-sub">@nickysantiago</span>
+            </span>
+          </span>
+          <span class="arrow">→</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://linkedin.com/" target="_blank" rel="noopener">
+          <span class="link-left">
+            <span class="link-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            </span>
+            <span class="link-meta">
+              <span class="link-title">LinkedIn</span>
+              <span class="link-sub">Nicky Santiago</span>
+            </span>
+          </span>
+          <span class="arrow">→</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="mailto:nicky@example.com">
+          <span class="link-left">
+            <span class="link-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </span>
+            <span class="link-meta">
+              <span class="link-title">Email</span>
+              <span class="link-sub">nicky@example.com</span>
+            </span>
+          </span>
+          <span class="arrow">→</span>
+        </a>
+      </li>
+
+    </ul>
+  </section>
+
+  <!-- PROJECTS -->
+  <section>
+    <div class="section-label">work &amp; projects</div>
+    <ul class="project-list">
+
+      <li class="project-item">
+        <div class="project-top">
+          <span class="project-name">Sentinel Gateway</span>
+          <span class="project-tag">Security</span>
+        </div>
+        <p class="project-desc">Zero-trust network access layer with mTLS enforcement and short-lived certificate issuance for internal service mesh.</p>
+      </li>
+
+      <li class="project-item">
+        <div class="project-top">
+          <span class="project-name">Driftwatch</span>
+          <span class="project-tag">Infra</span>
+        </div>
+        <p class="project-desc">Open-source tool that detects config drift across cloud environments and generates diff reports against Terraform state.</p>
+      </li>
+
+      <li class="project-item">
+        <div class="project-top">
+          <span class="project-name">PagerBuddy</span>
+          <span class="project-tag">Tooling</span>
+        </div>
+        <p class="project-desc">Slack bot that enriches on-call alerts with runbook links, recent deploys, and owner context — cutting MTTD significantly.</p>
+      </li>
+
+      <li class="project-item">
+        <div class="project-top">
+          <span class="project-name">VaultSync</span>
+          <span class="project-tag">Security</span>
+        </div>
+        <p class="project-desc">Automated secret rotation pipeline for HashiCorp Vault integrated with AWS IAM roles and ephemeral credential TTLs.</p>
+      </li>
+
+    </ul>
+  </section>
+
+  <!-- BLOG -->
+  <section>
+    <div class="section-label">writing</div>
+    <ul class="post-list">
+      <li><a href="#">
+        <span class="post-title">Why I stopped trusting the perimeter</span>
+        <span class="post-date">Mar 2025</span>
+      </a></li>
+      <li><a href="#">
+        <span class="post-title">Terraform at scale: lessons from 3 years of drift</span>
+        <span class="post-date">Jan 2025</span>
+      </a></li>
+      <li><a href="#">
+        <span class="post-title">Building an internal PKI with Step-CA</span>
+        <span class="post-date">Oct 2024</span>
+      </a></li>
+      <li><a href="#">
+        <span class="post-title">The alert that taught me to write better runbooks</span>
+        <span class="post-date">Jul 2024</span>
+      </a></li>
+      <li><a href="#">
+        <span class="post-title">Short-lived credentials are the future, here's how to start</span>
+        <span class="post-date">Apr 2024</span>
+      </a></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>nicky.is &nbsp;·&nbsp; built with care</footer>
+
+</body>
+</html>
